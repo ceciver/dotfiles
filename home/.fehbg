@@ -1,0 +1,2 @@
+#!/bin/sh
+feh --no-fehbg --bg-fill '/home/ceciver/.config/i3/backgrounds/archwave.png' 

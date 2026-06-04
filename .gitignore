@@ -1,0 +1,43 @@
+# Editor and OS noise
+.DS_Store
+*~
+*.swp
+*.swo
+
+# Never commit private credentials or machine-local state if they are copied in.
+home/.ssh/
+home/.gnupg/
+home/.aws/
+home/.azure/
+home/.kube/
+home/.pki/
+home/.npmrc
+home/.netrc
+home/.git-credentials
+home/.config/go/telemetry/
+
+# Shell and application history
+home/.*history*
+home/.viminfo
+home/.zcompdump*
+home/.lesshst
+home/.sqlite_history
+
+# Browser, chat, and Electron runtime state
+home/.config/google-chrome/
+home/.config/BraveSoftware/
+home/.config/GeeLark/
+home/.config/Code/User/History/
+home/.config/Code/User/globalStorage/
+home/.config/Code/User/workspaceStorage/
+
+# Caches and generated state
+home/.cache/
+home/.local/share/
+home/.config/**/Cache/
+home/.config/**/cache/
+home/.config/**/CachedData/
+home/.config/**/Crash Reports/
+home/.config/nvim/.nvimlog
+home/.config/alacritty/*.bak
+home/.config/polybar/config.runtime.ini

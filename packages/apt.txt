@@ -1,0 +1,19 @@
+# Optional packages used by these dotfiles on Ubuntu/Debian systems.
+alacritty
+curl
+dunst
+fd-find
+feh
+git
+i3
+kitty
+materia-gtk-theme
+neovim
+papirus-icon-theme
+picom
+polybar
+ripgrep
+rofi
+tmux
+xclip
+zsh

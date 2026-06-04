@@ -1,0 +1,67 @@
+* {
+    bg: #1e1e2e;
+    bg-alt: #313244;
+    fg: #cdd6f4;
+    muted: #6c7086;
+    accent: #89b4fa;
+    urgent: #f38ba8;
+
+    background-color: transparent;
+    text-color: @fg;
+    font: "JetBrains Mono 10";
+    margin: 0;
+    padding: 0;
+    spacing: 0;
+}
+
+window {
+    width: 36%;
+    border: 2px;
+    border-color: @accent;
+    border-radius: 8px;
+    background-color: @bg;
+}
+
+mainbox {
+    padding: 14px;
+    spacing: 10px;
+}
+
+inputbar {
+    padding: 10px 12px;
+    border-radius: 6px;
+    background-color: @bg-alt;
+    children: [entry];
+}
+
+entry {
+    placeholder: "Search";
+    placeholder-color: @muted;
+}
+
+listview {
+    lines: 8;
+    columns: 1;
+    spacing: 4px;
+    scrollbar: false;
+}
+
+element {
+    padding: 8px 10px;
+    border-radius: 6px;
+    orientation: horizontal;
+}
+
+element selected {
+    background-color: @accent;
+    text-color: @bg;
+}
+
+element-icon {
+    size: 22px;
+    margin: 0 10px 0 0;
+}
+
+element-text {
+    vertical-align: 0.5;
+}

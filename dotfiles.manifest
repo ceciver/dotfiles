@@ -1,0 +1,27 @@
+# Paths are relative to $HOME. The installer symlinks each path from home/.
+.bash_logout
+.bashrc
+.fehbg
+.gtkrc-2.0
+.profile
+.tmux.conf
+.zshrc
+.config/Code/User/settings.json
+.config/GNOME-xdg-terminals.list
+.config/alacritty/alacritty.toml
+.config/dunst/dunstrc
+.config/gtk-3.0/bookmarks
+.config/gtk-3.0/settings.ini
+.config/i3
+.config/kitty/kitty.conf
+.config/mimeapps.list
+.config/nvim
+.config/picom/picom.conf
+.config/polybar/config.ini
+.config/polybar/launch.sh
+.config/rofi
+.config/ttyper
+.config/ubuntu-xdg-terminals.list
+.config/user-dirs.dirs
+.config/user-dirs.locale
+.config/xdg-terminals.list

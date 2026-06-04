@@ -1,0 +1,166 @@
+# Clean Ubuntu i3 setup
+# Mod1 = Alt
+
+set $mod Mod1
+set $terminal kitty
+set $browser google-chrome-stable
+set $files thunar
+set $launcher rofi -show drun
+
+font pango:JetBrains Mono 10
+
+# Borders and gaps
+default_border pixel 2
+default_floating_border pixel 2
+for_window [class=".*"] border pixel 2
+hide_edge_borders smart
+smart_gaps off
+gaps inner 6
+gaps outer 10
+
+# Colors
+set $bg       #1e1e2e
+set $surface  #313244
+set $fg       #cdd6f4
+set $muted    #6c7086
+set $accent   #89b4fa
+set $urgent   #f38ba8
+
+client.focused          $accent $accent $bg $accent $accent
+client.focused_inactive $surface $surface $fg $surface $surface
+client.unfocused        $bg $bg $muted $bg $bg
+client.urgent           $urgent $urgent $bg $urgent $urgent
+
+# Autostart
+exec --no-startup-id nm-applet
+exec --no-startup-id blueman-applet
+exec --no-startup-id dunst
+exec --no-startup-id picom --config ~/.config/picom/picom.conf
+exec_always --no-startup-id sh -c 'if xrandr | grep -q "^HDMI-1 connected"; then xrandr --output eDP-1 --auto --output HDMI-1 --auto --same-as eDP-1; else xrandr --output HDMI-1 --off --output eDP-1 --auto; fi'
+exec_always --no-startup-id feh --bg-fill ~/.config/i3/backgrounds/archwave.png
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+exec_always --no-startup-id setxkbmap -option caps:escape
+
+# GNOME settings daemons, only when available on Ubuntu.
+exec --no-startup-id sh -c '[ -x /usr/libexec/gsd-xsettings ] && /usr/libexec/gsd-xsettings'
+exec --no-startup-id sh -c '[ -x /usr/libexec/gsd-keyboard ] && /usr/libexec/gsd-keyboard'
+exec --no-startup-id sh -c '[ -x /usr/libexec/gsd-media-keys ] && /usr/libexec/gsd-media-keys'
+exec --no-startup-id sh -c '[ -x /usr/libexec/gsd-mouse ] && /usr/libexec/gsd-mouse'
+exec --no-startup-id sh -c '[ -x /usr/libexec/gsd-power ] && /usr/libexec/gsd-power'
+exec --no-startup-id sh -c '[ -x /usr/libexec/gsd-color ] && /usr/libexec/gsd-color'
+
+# Applications
+bindsym $mod+Return exec --no-startup-id $terminal
+bindsym $mod+Shift+Return split h; exec --no-startup-id $terminal
+bindsym $mod+Shift+v split v; exec --no-startup-id $terminal
+bindsym $mod+d exec --no-startup-id $launcher
+bindsym $mod+b exec --no-startup-id $browser
+bindsym $mod+e exec --no-startup-id $files
+bindsym $mod+Shift+q kill
+
+# Session
+bindsym $mod+Shift+x exec --no-startup-id i3lock -c 000000
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec --no-startup-id i3-nagbar -t warning -m "Exit i3?" -B "Exit" "i3-msg exit"
+
+# Focus
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Move
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Layout
+bindsym $mod+backslash split h
+bindsym $mod+minus split v
+bindsym $mod+f fullscreen toggle
+bindsym $mod+z layout tabbed
+bindsym $mod+t layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+
+mode "resize" {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Down resize grow height 10 px or 10 ppt
+    bindsym Up resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# Workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# Media keys
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+
+bindsym --release XF86MonBrightnessUp exec --no-startup-id brightnessctl -d intel_backlight set +10%
+bindsym --release XF86MonBrightnessDown exec --no-startup-id brightnessctl -d intel_backlight set 10%-
+
+# Screenshots
+bindsym Print exec --no-startup-id flameshot gui
+bindsym $mod+Print exec --no-startup-id flameshot full -p ~/Pictures
+
+# Floating rules
+for_window [class="Pavucontrol"] floating enable
+for_window [class="Blueman-manager"] floating enable
+for_window [class="Lxappearance"] floating enable
+for_window [class="Nm-connection-editor"] floating enable
+for_window [title="Picture-in-Picture"] floating enable, sticky enable
+for_window [title="Picture in picture"] floating enable, sticky enable
