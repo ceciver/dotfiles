@@ -19,6 +19,8 @@ home/.config/go/telemetry/
 # Shell and application history
 home/.*history*
 home/.viminfo
+home/.vim/undodir/
+home/.tmux/plugins/
 home/.zcompdump*
 home/.lesshst
 home/.sqlite_history

@@ -17,7 +17,7 @@ fi
 if [ -n "$battery" ]; then
     sed -i "s/^battery = .*/battery = $battery/" "$runtime_config"
 else
-    sed -i 's/^modules-right = pulseaudio memory cpu battery tray/modules-right = pulseaudio memory cpu tray/' "$runtime_config"
+    sed -i '/^modules-right = / s/ battery//g' "$runtime_config"
 fi
 
 polybar-msg cmd quit >/dev/null 2>&1 || true

@@ -5,6 +5,7 @@
 .gtkrc-2.0
 .profile
 .tmux.conf
+.vimrc
 .zshrc
 .config/Code/User/settings.json
 .config/GNOME-xdg-terminals.list

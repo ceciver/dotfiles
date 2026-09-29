@@ -36,10 +36,9 @@ exec --no-startup-id nm-applet
 exec --no-startup-id blueman-applet
 exec --no-startup-id dunst
 exec --no-startup-id picom --config ~/.config/picom/picom.conf
-exec_always --no-startup-id sh -c 'if xrandr | grep -q "^HDMI-1 connected"; then xrandr --output eDP-1 --auto --output HDMI-1 --auto --same-as eDP-1; else xrandr --output HDMI-1 --off --output eDP-1 --auto; fi'
-exec_always --no-startup-id feh --bg-fill ~/.config/i3/backgrounds/archwave.png
-exec_always --no-startup-id ~/.config/polybar/launch.sh
+exec_always --no-startup-id ~/.config/i3/display-workflow.sh
 exec_always --no-startup-id setxkbmap -option caps:escape
+exec --no-startup-id ~/.config/i3/wacom-setup.sh
 
 # GNOME settings daemons, only when available on Ubuntu.
 exec --no-startup-id sh -c '[ -x /usr/libexec/gsd-xsettings ] && /usr/libexec/gsd-xsettings'
@@ -84,12 +83,15 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
+# screenshot
+bindsym $mod+Shift+s exec flameshot gui
+
 # Layout
 bindsym $mod+backslash split h
 bindsym $mod+minus split v
 bindsym $mod+f fullscreen toggle
 bindsym $mod+z layout tabbed
-bindsym $mod+t layout toggle split
+bindsym $mod+t split toggle
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 
@@ -141,6 +143,19 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
+# Keep a separate workspace group on the external monitor when it is connected.
+# HDMI-1 is the external display; the laptop keeps workspaces 6-10.
+workspace $ws1 output HDMI-1 primary
+workspace $ws2 output HDMI-1 primary
+workspace $ws3 output HDMI-1 primary
+workspace $ws4 output HDMI-1 primary
+workspace $ws5 output HDMI-1 primary
+workspace $ws6 output eDP-1 primary
+workspace $ws7 output eDP-1 primary
+workspace $ws8 output eDP-1 primary
+workspace $ws9 output eDP-1 primary
+workspace $ws10 output eDP-1 primary
+
 # Media keys
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
@@ -150,8 +165,8 @@ bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
 bindsym XF86AudioNext exec --no-startup-id playerctl next
 bindsym XF86AudioPrev exec --no-startup-id playerctl previous
 
-bindsym --release XF86MonBrightnessUp exec --no-startup-id brightnessctl -d intel_backlight set +10%
-bindsym --release XF86MonBrightnessDown exec --no-startup-id brightnessctl -d intel_backlight set 10%-
+bindsym --release XF86MonBrightnessUp exec --no-startup-id brightnessctl set +10%
+bindsym --release XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
 
 # Screenshots
 bindsym Print exec --no-startup-id flameshot gui

@@ -7,6 +7,7 @@ Usage: ./install.sh [options]
 
 Options:
   --dry-run              Print the changes without modifying files.
+  --only LIST            Install selected groups: i3,vim,tmux (comma-separated).
   --install-packages     Install packages from packages/apt.txt with apt-get.
   --no-bootstrap-tools   Do not clone Oh My Zsh, zsh-autosuggestions, or TPM.
   --repo URL             Git URL used when this script is run outside a checkout.
@@ -21,6 +22,7 @@ ORIGINAL_ARGS=("$@")
 DRY_RUN=0
 INSTALL_PACKAGES=0
 BOOTSTRAP_TOOLS=1
+ONLY=""
 DOTFILES_REPO="${DOTFILES_REPO:-}"
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 
@@ -31,6 +33,14 @@ while (($#)); do
       ;;
     --install-packages)
       INSTALL_PACKAGES=1
+      ;;
+    --only)
+      shift
+      if (($# == 0)) || [[ -z "$1" ]]; then
+        echo "--only needs a comma-separated list of i3,vim,tmux" >&2
+        exit 2
+      fi
+      ONLY="$1"
       ;;
     --no-bootstrap-tools)
       BOOTSTRAP_TOOLS=0
@@ -55,6 +65,35 @@ while (($#)); do
   esac
   shift
 done
+
+if [[ -n "$ONLY" && ! "$ONLY" =~ ^(i3|vim|tmux)(,(i3|vim|tmux))*$ ]]; then
+  echo "Invalid --only list: $ONLY (choose i3,vim,tmux)" >&2
+  exit 2
+fi
+
+has_group() {
+  [[ -z "$ONLY" || ",$ONLY," == *",$1,"* ]]
+}
+
+should_link() {
+  local rel="$1"
+  [[ -z "$ONLY" ]] && return 0
+
+  case "$rel" in
+    .config/i3|.config/dunst/dunstrc|.config/kitty/kitty.conf|.config/picom/picom.conf|.config/polybar/config.ini|.config/polybar/launch.sh|.config/rofi)
+      has_group i3
+      ;;
+    .vimrc|.config/nvim)
+      has_group vim
+      ;;
+    .tmux.conf)
+      has_group tmux
+      ;;
+    *)
+      return 1
+      ;;
+  esac
+}
 
 run() {
   if ((DRY_RUN)); then
@@ -150,16 +189,21 @@ bootstrap_tools() {
     return 0
   fi
 
-  clone_if_missing "https://github.com/ohmyzsh/ohmyzsh.git" "$HOME/.oh-my-zsh"
-  clone_if_missing "https://github.com/zsh-users/zsh-autosuggestions.git" "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
-  clone_if_missing "https://github.com/tmux-plugins/tpm.git" "$HOME/.tmux/plugins/tpm"
+  if [[ -z "$ONLY" ]]; then
+    clone_if_missing "https://github.com/ohmyzsh/ohmyzsh.git" "$HOME/.oh-my-zsh"
+    clone_if_missing "https://github.com/zsh-users/zsh-autosuggestions.git" "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+  fi
+
+  if has_group tmux; then
+    clone_if_missing "https://github.com/tmux-plugins/tpm.git" "$HOME/.tmux/plugins/tpm"
+  fi
 
   local tpm_installer="$HOME/.tmux/plugins/tpm/bin/install_plugins"
-  if [[ -x "$tpm_installer" ]]; then
+  if has_group tmux && [[ -x "$tpm_installer" ]]; then
     run "$tpm_installer"
   fi
 
-  if command -v zsh >/dev/null 2>&1 && [[ "${SHELL:-}" != "$(command -v zsh)" ]]; then
+  if [[ -z "$ONLY" ]] && command -v zsh >/dev/null 2>&1 && [[ "${SHELL:-}" != "$(command -v zsh)" ]]; then
     printf 'zsh is installed. To make it your login shell, run: chsh -s %s\n' "$(command -v zsh)"
   fi
 }
@@ -187,13 +231,21 @@ link_path() {
   if [[ -e "$dst" || -L "$dst" ]]; then
     run mkdir -p "$(dirname "$backup")"
     run mv "$dst" "$backup"
-    BACKUP_USED=1
-    printf 'backed up: %s -> %s\n' "$rel" "$backup"
+    if ((DRY_RUN)); then
+      printf 'would back up: %s -> %s\n' "$rel" "$backup"
+    else
+      BACKUP_USED=1
+      printf 'backed up: %s -> %s\n' "$rel" "$backup"
+    fi
   fi
 
   run mkdir -p "$(dirname "$dst")"
   run ln -s "$src" "$dst"
-  printf 'installed: %s\n' "$rel"
+  if ((DRY_RUN)); then
+    printf 'would install: %s\n' "$rel"
+  else
+    printf 'installed: %s\n' "$rel"
+  fi
 }
 
 link_manifest() {
@@ -202,6 +254,7 @@ link_manifest() {
   while IFS= read -r rel || [[ -n "$rel" ]]; do
     rel="$(trim "${rel%%#*}")"
     [[ -n "$rel" ]] || continue
+    should_link "$rel" || continue
     link_path "$rel"
   done < "$MANIFEST_FILE"
 
@@ -220,4 +273,8 @@ if ((BOOTSTRAP_TOOLS)); then
   bootstrap_tools
 fi
 
-echo "Dotfiles install complete."
+if ((DRY_RUN)); then
+  echo "Dotfiles preview complete."
+else
+  echo "Dotfiles install complete."
+fi
